@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "601728622794",
+    "project_id": "atlas-employee-86f97",
+    "storage_bucket": "atlas-employee-86f97.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:601728622794:android:01398cf4862b3f0e489433",
+        "android_client_info": {
+          "package_name": "com.atlasemployee"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAQD43B2YaMHVM6O6dqmPHdA6lmfpZMJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:601728622794:android:b5d2c4cefe285374489433",
+        "android_client_info": {
+          "package_name": "com.atlasuser"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAAQD43B2YaMHVM6O6dqmPHdA6lmfpZMJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
