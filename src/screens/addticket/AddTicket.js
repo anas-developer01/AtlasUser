@@ -1,12 +1,30 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import { View, Text, StatusBar, TouchableOpacity, TextInput, Modal, ScrollView, ImageBackground, ActivityIndicator } from 'react-native';
 import { Black, Blue, ButtonClr, Entypo, Grey, H, Ionicons, LightGrey, W, White } from "../../constant/Common";
 import ImageCropPicker from "react-native-image-crop-picker";
 import { AppContext } from "../../context/AppProvider";
 import { addTicke, categories, childbysubcategories, department, services, subcategories } from "../../api/ticket";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 const AddTicket = (props) => {
     const { goBack, navigate } = props?.navigation;
+    const detailsRef = useRef(null);
+    const scrollRef = useRef(null);
+    const fieldYPositions = useRef({});
+    const SCROLL_OFFSET_ABOVE_KEYBOARD = 140;
+
+    const scrollToDetailsAboveKeyboard = () => {
+        setTimeout(() => {
+            const y = fieldYPositions.current.details;
+            if (typeof y === 'number' && scrollRef.current?.scrollToPosition) {
+                scrollRef.current.scrollToPosition(
+                    0,
+                    Math.max(0, y - SCROLL_OFFSET_ABOVE_KEYBOARD),
+                    true
+                );
+            }
+        }, 200);
+    };
     const [selectionType, setSelectionType] = useState('Select Product/Service');
     const [showModal, setShowModal] = useState(false);
     const [selectProduct, setSelectProduct] = useState();
@@ -108,7 +126,18 @@ const AddTicket = (props) => {
     }
 
     return(
-        <ScrollView showsVerticalScrollIndicator={false} style={{flex:1}}>
+        <KeyboardAwareScrollView
+            ref={scrollRef}
+            showsVerticalScrollIndicator={false}
+            style={{ flex: 1 }}
+            enableOnAndroid={true}
+            extraScrollHeight={150}
+            extraHeight={150}
+            keyboardOpeningTime={0}
+            enableResetScrollToCoords={false}
+            keyboardShouldPersistTaps="handled"
+            enableAutomaticScroll={true}
+            viewIsInsideTabBar={false}>
             <StatusBar backgroundColor={'#F5F6F7'} />            
             <View style={{flexDirection:'row',alignItems:'center',marginTop:H(6)}}>
             <TouchableOpacity
@@ -251,24 +280,30 @@ const AddTicket = (props) => {
                 <Ionicons name={'arrow-forward'} size={22} color={ButtonClr} style={{marginRight:H(2)}} />
             </TouchableOpacity>
 
-            <Text style={{color:Black,fontSize:16,fontFamily:'Poppins-Medium',marginLeft:H(3),marginTop:H(1.5)}}>Details</Text>
-            <View style={{
-                height:H(12),
-                width:W(87),
-                backgroundColor:White,
-                borderWidth:H(.1),
-                borderColor:LightGrey,
-                alignSelf:'center',
-                elevation:1,
-                borderRadius:H(.5),
-                marginTop:H(.5),
-            }}>
-                <TextInput
-                value={details}
-                style={{paddingLeft:H(1),marginLeft:H(.5),color:Black,marginTop:H(1)}}
-                placeholder='Type here'
-                placeholderTextColor={Grey}
-                onChangeText={(details) => setDetails(details)}/>
+            <View onLayout={(e) => { fieldYPositions.current.details = e.nativeEvent.layout.y; }}>
+                <Text style={{color:Black,fontSize:16,fontFamily:'Poppins-Medium',marginLeft:H(3),marginTop:H(1.5)}}>Details</Text>
+                <View style={{
+                    height:H(12),
+                    width:W(87),
+                    backgroundColor:White,
+                    borderWidth:H(.1),
+                    borderColor:LightGrey,
+                    alignSelf:'center',
+                    elevation:1,
+                    borderRadius:H(.5),
+                    marginTop:H(.5),
+                }}>
+                    <TextInput
+                        ref={detailsRef}
+                        value={details}
+                        style={{paddingLeft:H(1),marginLeft:H(.5),color:Black,marginTop:H(1)}}
+                        placeholder='Type here'
+                        placeholderTextColor={Grey}
+                        multiline={true}
+                        returnKeyType="default"
+                        onFocus={scrollToDetailsAboveKeyboard}
+                        onChangeText={(details) => setDetails(details)}/>
+                </View>
             </View>
             <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between'}}>
             <Text style={{color:Black,fontSize:16,fontFamily:'Poppins-Medium',marginLeft:H(3),marginTop:H(1.5)}}>Add Images</Text>
@@ -521,7 +556,7 @@ const AddTicket = (props) => {
                 </View>
             </Modal>
 
-        </ScrollView>
+        </KeyboardAwareScrollView>
     );
 };
 
